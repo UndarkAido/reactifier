@@ -19,10 +19,6 @@ void filter(std::string &target, const std::string &pattern);
 
 
 int main(){
-	std::cout << "Howdy, and thanks for trying out Discord++!\n"
-	          << "Feel free to drop into the official server at https://discord.gg/0usP6xmT4sQ4kIDh if you have any questions.\n\n"
-	          << std::flush;
-
 	std::cout << "Starting bot...\n\n";
 
 	/*/
@@ -65,52 +61,36 @@ int main(){
 	// Create handler for the MESSAGE_CREATE payload, this receives all messages sent that the bot can see.
 	bot->handlers.insert(
 			{
-					"MESSAGE_CREATE",
-					[&bot, &self](json msg){
-						// Scan through mentions in the message for self
-						bool mentioned = false;
-						for(const json &mention : msg["mentions"]){
-							mentioned = mentioned or mention["id"] == self["id"];
+					"MESSAGE_REACTION_ADD",
+					[&bot, &self](const json &msg){
+						std::ostringstream send;
+						send << msg["member"]["nick"].get<std::string>() << " reacted ";
+						if(msg["emoji"]["id"].is_null()){
+							send << msg["emoji"]["name"].get<std::string>();
+						}else{
+							send << "<:" << msg["emoji"]["name"].get<std::string>() << ":"
+							     << msg["emoji"]["id"].get<std::string>() << ">";
 						}
-						if(mentioned){
-							// Identify and remove mentions of self from the message
-							std::string content = msg["content"];
-							std::string mentioncode = "<@" + self["id"].get<std::string>() + ">";
-							std::string nickedcode = "<@!" + self["id"].get<std::string>() + ">";
-							filter(content, mentioncode + ' ');
-							filter(content, nickedcode + ' ');
-							filter(content, mentioncode);
-							filter(content, nickedcode);
-
-							while(content.find(mentioncode) != std::string::npos){
-								content = content.substr(0, content.find(mentioncode)) +
-								          content.substr(content.find(mentioncode) + mentioncode.size());
-							}
-
-							// Echo the created message
-							bot->call(
-									"POST",
-									"/channels/" + msg["channel_id"].get<std::string>() + "/messages",
-									json({{"content", content}})
-							);
-
-							// Set status to Playing "with [author]"
-							bot->send(
-									3, {
-											{
-													"game",   {
-															          {
-																	          "name", "with " +
-																	                  msg["author"]["username"].get<std::string>()
-															          },
-															          {"type", 0}
-													          }},
-											{       "status", "online"},
-											{       "afk",    false},
-											{       "since",  "null"}
-									}
-							);
-						}
+						std::string content = send.str();
+						bot->call(
+								"GET",
+								"/channels/" + msg["channel_id"].get<std::string>() + "/messages/" +
+								msg["message_id"].get<std::string>(),
+								[&bot, &self, content](const json &msg){
+									bot->call(
+											"POST",
+											"/users/@me/channels",
+											json({{"recipient_id", msg["author"]["id"]}}),
+											[&bot, &self, content](const json &msg){
+												bot->call(
+														"POST",
+														"/channels/" + msg["id"].get<std::string>() + "/messages",
+														json({{"content", content}})
+												);
+											}
+									);
+								}
+						);
 					}
 			}
 	);
