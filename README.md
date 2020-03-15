@@ -1,9 +1,10 @@
-# Discord++ example bot, Echo<sup>Echo<sup>Echo</sup></sup>
+# Reactifier, a Discord++ bot
+A Discord bot that notifies users of reactions to their messages
 
-## Community & Support <sup>Some incredibly nice people here!</sup>
+## Discord++ Community & Support
 [Discord++ Discord Server](https://discord.gg/0usP6xmT4sQ4kIDh)
 
-## How to Get Started <sup>Let's get it sta-arted! Let's get it started in here!</sup>
+## How to Get Started
 
 ### Install Prerequisites
 #### Install Git
@@ -22,13 +23,9 @@
 `sup apt install git clang cmake build-essential libboost-all-dev libssl-dev libcrypto++-dev libcurl4-openssl-dev`
 
 ### Set Up Repository
-#### Fork Echo <sup>Optional, I guess</sup>
- * Click the 'Fork' button in the upper-right of the repo's page
- * If you're in an organization, elect the where you want the fork to go
- * Click on your new 'Settings' tab, and rename your new repo
  
 #### Clone the Code
-Run `git clone --recursive https://github.com/discordpp/echo-bot.git` in your desired directory. If you made a fork, replace `discordpp` and `echo-bot` ass applicable.
+Run `git clone --recursive https://github.com/undarkaido/reactifier.git` in your desired directory.
 
 ### Register a Bot
  1. Go to Discord's [Developer Portal 'Application' page](https://discordapp.com/developers/applications/), it will prompt you to sign in <sup>By the way, do you have 2FA enabled? It's a really good idea, especially with bots on your account</sup>
@@ -56,10 +53,8 @@ Run `git clone --recursive https://github.com/discordpp/echo-bot.git` in your de
  4. Build the makefiles with `cmake ../`
  5. Build the bot with `make`
  6. Run the bot with `./echo_bot`
-    * You can change the executable name by modifying the `project` command in `CMakeLists.txt`
- 7. ???
- 8. Profit! Mention your bot in a scope it can read & write in, it should echo back your message.
+    * You can change the executable name by modifying the `project` command in `CMakeLists.txt
+ 7. React to a message of yours in a scope your bot can read in, you should receive a DM.
 
 ## Contributing
- * Echo is pretty simple and probably doesn't need much, but if you have a suggestion or spot an issue, make a pull request on Github!
- * Also, this repo needs better jokes.
+If you have a suggestion or spot an issue, make a pull request on Github!
